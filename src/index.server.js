@@ -20,6 +20,12 @@ connect("mongodb+srv://Aloni:1234@cluster0.xfwelvs.mongodb.net/BLAGAN", {
   }
 );
 
+app.get("/api/api", function (req, res) {
+  res.status(400).json({
+    message: "Invalid Password",
+  });
+});
+
 app.use(bodyParser());
 app.use("/api", userRoutes);
 app.use("/api", adminRoutes);
