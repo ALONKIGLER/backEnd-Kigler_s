@@ -60,5 +60,5 @@ app.use("/api", adminOrderRoute);
 // mongodb+srv://<username>:<password>@cluster0.xfwelvs.mongodb.net/?retryWrites=true&w=majority
 
 app.listen(2000, () => {
-  console.log(`server is running in port ${process.env.PORT}`);
+  // console.log(`server is running in port ${process.env.PORT}`);
 });
