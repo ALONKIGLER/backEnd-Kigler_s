@@ -1,25 +1,42 @@
 const express = require("express");
-const slugify = require("slugify");
+const { adminMiddleware, requireSignin } = require("../common-middleware.js");
 const router = express.Router();
-const Category = require("../models/category");
+const {
+  addCategory,
+  getCategories,
+  updateCategories,
+  deleteCategories,
+} = require("../controller/category");
+const multer = require("multer");
+const shortid = require("shortid");
+const path = require("path");
 
-router.post("/profile", (req, res) => {
-  const categoryObj = {
-    name: req.body.name,
-    slug: slugify(req.body.name),
-  };
-
-  if (req.body.parentId) {
-    categoryObj.parentId = req.body.parentId;
-  }
-
-  const cat = new Category(categoryObj);
-  cat.save((error, category) => {
-    if (error) return res.status(400).json({ error });
-    if (category) {
-      return res.status(201).json({ category });
-    }
-  });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(path.dirname(__dirname), "uploads"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, shortid.generate() + "-" + file.originalname);
+  },
 });
+
+const upload = multer({ storage });
+
+router.post(
+  "/category/create",
+  requireSignin,
+  adminMiddleware,
+  upload.single("categoryImage"),
+  addCategory
+);
+router.get("/category/getcategory", getCategories);
+
+router.post(
+  "/category/update",
+  upload.array("categoryImage"),
+  updateCategories
+);
+
+router.post("/category/delete", requireSignin, deleteCategories);
 
 module.exports = router;

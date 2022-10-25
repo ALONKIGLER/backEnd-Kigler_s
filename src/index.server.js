@@ -4,12 +4,17 @@ const app = express();
 const bodyParser = require("body-parser");
 const { connect } = require("mongoose");
 const session = require("express-session");
-
-// const indexRoutes = require("./routes/index");
 const categoryRoutes = require("./routes/category");
-
+const productRoutes = require("./routes/product");
 const userRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin/auth");
+const cartRoutes = require("./routes/cart");
+const path = require("path");
+const cors = require("cors");
+const initialData = require("./routes/admin/initialData");
+const addressRoutes = require("./routes/address");
+const orderRoutes = require("./routes/order");
+const adminOrderRoute = require("./routes/admin/order.routes");
 
 env.config();
 
@@ -39,17 +44,18 @@ app.post("/api/api", function (req, res) {
   });
 });
 
+app.use(cors());
 app.use(express.json());
-
-// app.get("/dynamic", function (req, res) {
-//   res.json({
-//     message: "aasass",
-//   });
-// });
-
-app.use("/api", categoryRoutes);
+app.use("/public", express.static(path.join(__dirname, "uploads")));
 app.use("/api", userRoutes);
 app.use("/api", adminRoutes);
+app.use("/api", categoryRoutes);
+app.use("/api", productRoutes);
+app.use("/api", cartRoutes);
+app.use("/api", initialData);
+app.use("/api", addressRoutes);
+app.use("/api", orderRoutes);
+app.use("/api", adminOrderRoute);
 
 // mongodb+srv://<username>:<password>@cluster0.xfwelvs.mongodb.net/?retryWrites=true&w=majority
 
